@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -6,6 +7,7 @@
 <title>Sayı Hafızası Testi</title>
 <style>
 * { box-sizing: border-box; }
+
 body {
     margin: 0;
     background: #000;
@@ -17,10 +19,24 @@ body {
     align-items: center;
     text-align: center;
 }
+
 .container { width: 100%; padding: 20px; }
-#number { font-size: clamp(80px, 20vw, 180px); font-weight: bold; }
-#countdown { font-size: 100px; font-weight: bold; }
-#status { font-size: 22px; margin-bottom: 30px; }
+
+#number {
+    font-size: clamp(80px, 20vw, 180px);
+    font-weight: bold;
+}
+
+#countdown {
+    font-size: 100px;
+    font-weight: bold;
+}
+
+#status {
+    font-size: 22px;
+    margin-bottom: 30px;
+}
+
 button {
     display: none;
     padding: 18px 35px;
@@ -32,19 +48,29 @@ button {
     font-size: 20px;
     cursor: pointer;
 }
+
 #startButton { display: inline-block; }
-#progress { margin-top: 20px; font-size: 18px; color: #aaa; }
+
+#progress {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #aaa;
+}
 </style>
 </head>
+
 <body>
+
 <div class="container">
     <div id="status">Sayı Hafızası Testi</div>
     <div id="number"></div>
     <div id="countdown"></div>
     <div id="progress"></div>
+
     <button id="startButton" onclick="startTest()">Teste Başla</button>
     <button id="nextButton" onclick="nextSet()">Sonraki Sete Geç</button>
 </div>
+
 <script>
 const sets = [
  ["4","9","1","6","3","7"],
@@ -54,6 +80,9 @@ const sets = [
  ["36","97","51","48"],
  ["519","738"]
 ];
+
+// Her setin sonunda gösterilecek sayılar
+const finalNumbers = ["42", "33", "95", "83", "19", "57"];
 
 let currentSet = 0;
 let currentNumber = 0;
@@ -76,14 +105,16 @@ function showSet() {
     numberElement.textContent = "";
     countdownElement.textContent = "";
     nextButton.style.display = "none";
+
     statusElement.textContent = (currentSet + 1) + ". SET";
     progressElement.textContent = "";
+
     showNumber();
 }
 
 function showNumber() {
     if (currentNumber >= sets[currentSet].length) {
-        startCountdown();
+        showFinalNumber();
         return;
     }
 
@@ -92,39 +123,42 @@ function showNumber() {
     setTimeout(() => {
         numberElement.textContent = "";
         currentNumber++;
+
         setTimeout(showNumber, 100);
+
     }, 1500);
 }
 
-function startCountdown() {
-    numberElement.textContent = "";
+// Set sonunda özel sayıyı 9 saniye göster
+function showFinalNumber() {
+    numberElement.textContent = finalNumbers[currentSet];
+
     statusElement.textContent = "";
-    progressElement.textContent = "";
-    let remaining = 9;
     countdownElement.textContent = "";
+    progressElement.textContent = "";
+    nextButton.style.display = "none";
 
-    const timer = setInterval(() => {
-        countdownElement.textContent = remaining;
-        remaining--;
+    setTimeout(() => {
+        numberElement.textContent = "";
 
-        if (remaining < 0) {
-            clearInterval(timer);
-            countdownElement.textContent = "";
-            statusElement.textContent = (currentSet + 1) + ". SET TAMAMLANDI";
-            progressElement.textContent = "Sonraki aşamaya geçebilirsiniz.";
-            nextButton.style.display = "inline-block";
+        statusElement.textContent = (currentSet + 1) + ". SET TAMAMLANDI";
+        progressElement.textContent = "Sonraki aşamaya geçebilirsiniz.";
 
-            if (currentSet === sets.length - 1) {
-                nextButton.textContent = "Testi Tamamla";
-            }
+        nextButton.style.display = "inline-block";
+
+        if (currentSet === sets.length - 1) {
+            nextButton.textContent = "Testi Tamamla";
         }
-    }, 1000);
+
+    }, 9000);
 }
 
 function nextSet() {
     if (currentSet < sets.length - 1) {
         currentSet++;
+        nextSetButtonReset();
         showSet();
+
     } else {
         numberElement.textContent = "";
         countdownElement.textContent = "";
@@ -133,6 +167,11 @@ function nextSet() {
         nextButton.style.display = "none";
     }
 }
+
+function nextSetButtonReset() {
+    nextButton.textContent = "Sonraki Sete Geç";
+}
 </script>
+
 </body>
 </html>
